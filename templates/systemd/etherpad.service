@@ -1,0 +1,13 @@
+[Unit]
+Description=Etherpad Server
+After=network.target
+[Service]
+Type=simple
+WorkingDirectory=/home/etherpad
+ExecStart=/usr/bin/node /home/etherpad/node_modules/ep_etherpad-lite/node/server.js
+User=etherpad
+Group=etherpad
+Restart=always
+RestartSec=9
+[Install]
+WantedBy=multi-user.target

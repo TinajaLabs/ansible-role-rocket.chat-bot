@@ -1,0 +1,109 @@
+---
+# tasks file for tinajalabs.chatbot
+
+
+# --------------------------------------------------------------------
+# do this before installing hubot-rocketchat and running yo hubot
+- name: Tinaja config task | Create the hubot directory
+  file: 
+    path: "{{ bot_dir }}"
+    state: directory
+    owner: pi
+    group: pi
+    mode: 0775
+
+
+- name: Tinaja config task | Update apt-get cache
+  apt:
+    update_cache: yes
+
+
+# --------------------------------------------------------------------
+
+- name:  Tinaja config task | Pre-config for nodejs/npm version {{nodejs_version}}
+  shell: "curl -sL https://deb.nodesource.com/setup_{{nodejs_version}} | sudo -E bash -"
+  args:
+    warn: false
+
+- name:  Tinaja config task | Install nodejs & npm with apt-get
+  apt:
+    name: nodejs
+
+
+- name:  Tinaja config task | Install yo, generator-hubot with npm
+  npm:
+    name: "{{ item }}"
+    global: true
+  with_items:
+    - yo
+    - generator-hubot
+
+
+- name:  Tinaja config task | Install the hubot to rocketchat adapter with npm
+  become: true
+  become_user: pi
+  npm:
+    name: "hubot-rocketchat"
+    version: 1.0.12
+    path: "{{ bot_dir }}"
+
+
+# --------------------------------------------------------------------
+
+- name:   Tinaja config task | Run the yo hubot command as user, pi
+  become: true
+  become_user: pi
+  shell: yo hubot --no-insight --owner="{{ bot_owner }}" --name="{{bot_name}}" --description="{{bot_desc}}" --adapter="rocketchat"
+  args:
+    chdir: "{{ bot_dir }}"
+
+
+# --------------------------------------------------------------------
+
+- name:  Tinaja config task | Install snapd
+  apt:
+    name: snapd
+
+- name:  Tinaja config task | Snap install of rocketchat-server
+  shell: snap install rocketchat-server
+
+
+# --------------------------------------------------------------------
+
+- name: Tinaja config task | Copy hubot start script into {{ bot_dir }}
+  become: true
+  become_user: pi
+  template:
+    src: templates/starthubot.sh
+    dest: "{{ bot_dir }}/starthubot.sh"
+    owner: pi
+    group: pi
+    mode: 0775
+
+
+- name: Tinaja config task | Copy custom scripts into {{ bot_dir }}/scripts
+  template:
+    src: "templates/scripts/{{ item }}"
+    dest: "{{ bot_dir }}/scripts/{{ item }}"
+    owner: pi
+    group: pi
+    mode: 0775
+  with_items:
+    - tinaja.coffee
+    - tinaja-listen.coffee
+
+
+- name: Tinaja config task | Set up systemd unit file for hubot
+  template:
+    src: templates/systemd/hubot.service
+    dest: /etc/systemd/system/hubot.service
+    owner: root
+    group: root
+    mode: 0664
+
+- name: Tinaja config task | Make sure hubot service is running
+  systemd: 
+    name: hubot
+    enabled: true
+    state: restarted
+

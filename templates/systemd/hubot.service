@@ -1,0 +1,44 @@
+; hubot systemd init for raspbian stretch
+
+[Unit]
+Description=Iris Hubot
+;Wants=snap.rocketchat-server.rocketchat-server.service
+After=network.target snap.rocketchat-server.rocketchat-server.service
+
+
+[Service]
+
+TimeoutStartSec=180
+
+Type=simple
+;Type=idle
+
+StandardOutput=syslog
+SyslogIdentifier=HubotIris
+WorkingDirectory=/opt/iris/
+
+;Environment=ROCKETCHAT_ROOM=''
+;Environment=LISTEN_ON_ALL_PUBLIC=true
+;Environment=ROCKETCHAT_USER=iris
+;Environment=ROCKETCHAT_PASSWORD=tinaja#123
+;Environment=ROCKETCHAT_AUTH=password
+;Environment=ROCKETCHAT_URL=http://192.168.1.135:3000
+
+ExecStartPre=/bin/sleep 90
+
+; ExecStart=/opt/iris/bin/hubot -a rocketchat
+ExecStart=/opt/iris/starthubot.sh
+
+User=pi
+Group=pi
+
+; Restart=always
+; RestartSec=10
+
+Restart=on-failure
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target
+
+

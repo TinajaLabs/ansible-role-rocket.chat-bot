@@ -1,0 +1,13 @@
+---
+# defaults file for tinajalabs.chatbot
+
+nodejs_version: "8.x"   # or, 10.x
+
+
+hubot_rocketchat_version: "1.0.12"
+
+bot_name: "bot"
+bot_owner: "{{ bot_name }} {{ bot_name }}@{{ domain.com }}"
+bot_dir: "/opt/{{ bot_name }}"
+bot_desc: "Go ask Iris, when she's ten feet tall "
+
