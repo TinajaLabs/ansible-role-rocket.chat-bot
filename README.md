@@ -1,11 +1,25 @@
 Ansible Rocket.Chat with Hubot
 ===============================
 
-A simple Ansible role to install Rocket.Chat with a bot, Hubot, on a Raspberry Pi. Yep, a chat system running in your home. Hubot is from the folks at [Gitlab - Hubot](https://hubot.github.com/)  The Hubot software can be used to code a bot (software robot).  The bot, acting as a user in the chat system, can be programmed to act on your command to activate and respond to smart devices in your home.
+A simple Ansible role to install [Rocket.Chat](https://rocket.chat/) with a bot, Hubot, on a Raspberry Pi. Yep, a chat-bot system running in your home.
 
-The Ansible playbook/role uses snapd to install Rocket.chat and uses a standard set of other commands to install and configure Hubot.
 
-In my system, I've named my bot, Iris, so any references to that is just my preference.
+Rocket.Chat
+-----------
+[Rocket.Chat](https://rocket.chat/) is an open source chat system similar to Slack or Hipchat.  It can be installed on a Raspberry Pi in your own home network and give you access to a chat system available to family and friends.
+
+
+Hubot
+-----
+Hubot is from the folks at [GitHub - Hubot](https://hubot.github.com/)  The Hubot software can be used to code a bot (software robot).  The bot, acting as a user within the chat system, can be programmed to act on your behalf to activate and respond to smart devices in your home. 
+
+
+Basic Installation
+------------------
+
+This Ansible playbook/role uses snapd to install Rocket.chat and uses a standard set of other commands to install and configure Hubot.
+
+In my system, I've named my bot, `Iris`, so any references to that is just my preference.
 
 
 Requirements
@@ -14,11 +28,11 @@ Requirements
 Designed and tested with: 
 
 * Raspberry Pi 3 Model B V1.2 running minimal version of Raspbian Stretch.
-* git needs to be installed on the taget Raspberry Pi ??
+* git needs to be installed on the target Raspberry Pi ??
 
 
 Role Variables
--------------
+--------------
 ```
 # defaults file for tinajalabs.chatbot
 
@@ -134,12 +148,13 @@ References
 * How Ansible Works - https://www.ansible.com/overview/how-ansible-works
 * Get Started with Ansible - https://docs.ansible.com/ansible/latest/network/getting_started/first_playbook.html
 * Hubot Documentation - https://hubot.github.com/docs/
+* Rocket.Chat - https://rocket.chat/
 * Rocket.Chat with Bots - https://rocket.chat/docs/bots/
-* 
+
 
 ToDo:
 -----
-* find a way to automate the addition of the admin usr, the bot user
+* find a way to automate the addition of the admin usr, the organization info, and the bot user.
 * research why it takes rocket.chat so long to start.
 
 
