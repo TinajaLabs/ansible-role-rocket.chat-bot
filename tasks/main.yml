@@ -4,7 +4,7 @@
 # --------------------------------------------------------------------
 # do this before installing hubot-rocketchat and running yo hubot
 - name: Tinaja config task | Create the hubot directory
-  file: 
+  file:
     path: "{{ bot_dir }}"
     state: directory
     owner: pi
@@ -42,7 +42,7 @@
     path: "{{ bot_dir }}"
 
 # --------------------------------------------------------------------
-- name:   Tinaja config task | Run the yo hubot command as user, pi
+- name: "Tinaja config task | Run the yo hubot shell command as user, pi"
   become: true
   become_user: pi
   shell: yo hubot --no-insight --owner="{{ bot_owner }}" --name="{{ bot_name }}" --description="{{ bot_desc }}" --adapter="rocketchat"
@@ -88,7 +88,7 @@
     mode: 0664
 
 - name: Tinaja config task | Make sure hubot service is running
-  systemd: 
+  systemd:
     name: hubot
     enabled: true
     state: restarted
