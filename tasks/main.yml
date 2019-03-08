@@ -38,7 +38,7 @@
   become_user: pi
   npm:
     name: "hubot-rocketchat"
-    version: 1.0.12
+    version: {{ hubot_rocketchat_version }}
     path: "{{ bot_dir }}"
 
 # --------------------------------------------------------------------
@@ -58,7 +58,7 @@
   shell: snap install rocketchat-server
 
 # --------------------------------------------------------------------
-- name: Tinaja config task | Copy hubot start script into {{ bot_dir }}
+- name: Tinaja config task | Copy hubot start script, starthubot.sh, into {{ bot_dir }}
   become: true
   become_user: pi
   template:
@@ -68,7 +68,7 @@
     group: pi
     mode: 0775
 
-- name: Tinaja config task | Copy custom scripts into {{ bot_dir }}/scripts
+- name: Tinaja config task | Copy custom coffee scripts into {{ bot_dir }}/scripts
   template:
     src: "templates/scripts/{{ item }}"
     dest: "{{ bot_dir }}/scripts/{{ item }}"
@@ -81,7 +81,7 @@
 
 - name: Tinaja config task | Set up systemd unit file for hubot
   template:
-    src: templates/systemd/hubot.service
+    src: templates/systemd/hubot.service.j2
     dest: /etc/systemd/system/hubot.service
     owner: root
     group: root
@@ -92,3 +92,9 @@
     name: hubot
     enabled: true
     state: restarted
+
+
+# =======================================================================================
+- debug:
+  msg: "Access Rocket.Chat at: http://{{ rocket_chat_address }}:{{ rocket_chat_port }}"
+
