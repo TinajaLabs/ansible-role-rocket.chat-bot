@@ -154,8 +154,9 @@ References
 
 ToDo:
 -----
-* find a way to automate the addition of the admin usr, the organization info, and the bot user.
-* research why it takes rocket.chat so long to start.
+* find a way to automate the initialization of the admin user, the organization info, and the bot user.
+* At boot up time, Rocket.Chat starts, Hubot starts, but the hubot service needs to be restarted after Rocket.Chat has finished launching.
+* research why it takes rocket.chat so long to start
 
 
 License
