@@ -3,7 +3,8 @@
 #
 # Dependencies:
 #   none
-#
+# 
+# this adds to the menus
 # Commands:
 #   iris `list rooms` - Displays all rooms referenced in the home automation system.
 #   iris `list devices in <room>` - Displays all devices that match <room>.
@@ -22,7 +23,7 @@
 
 
 # mqtt = require('mqtt')
-# client  = mqtt.connect('http://mf-tinaja-co')
+# client  = mqtt.connect('http://tinaja-co')
 # topic = "home/kitchen/esp8266/switch"
 # msg = "xxx"
 
@@ -91,9 +92,9 @@ module.exports = (robot) ->
 
     msg.send "Retrieving list of rooms in the home.  Please wait..."
 
-    # robot.http("http://mf-tinaja-co:1880/devicelist?state=#{lightState}&device=#{deviceName}&location=#{deviceLocation}").get() (err, res, body) ->
+    # robot.http("http://tinaja-co:1880/devicelist?state=#{lightState}&device=#{deviceName}&location=#{deviceLocation}").get() (err, res, body) ->
 
-    msg.http("http://mf-tinaja-co:1880/roomlist")
+    msg.http("http://tinaja-co:1880/roomlist")
     .get() (err, res, body) -> 
 
       try
@@ -116,7 +117,7 @@ module.exports = (robot) ->
     deviceRoom = msg.match[1]
     msg.send "Listing devices in the #{deviceRoom}.  Please wait..."
 
-    msg.http("http://mf-tinaja-co:1880/devicelist")
+    msg.http("http://tinaja-co:1880/devicelist")
     .get() (err, res, body) -> 
 
       try
@@ -143,7 +144,7 @@ module.exports = (robot) ->
 
     # build the full topic here and send it back to be http processed.
 
-    msg.http("http://mf-tinaja-co:1880/setdevice?device=#{deviceName}&room=#{deviceRoom}&state=#{deviceState}")
+    msg.http("http://tinaja-co:1880/setdevice?device=#{deviceName}&room=#{deviceRoom}&state=#{deviceState}")
       .get() (err, res, body) -> 
 
         msg.send "Node-RED confirmed receipt of message with the following payload:\n #{body}"
@@ -163,13 +164,13 @@ module.exports = (robot) ->
   
 
   # get a chart of temps
-  # http://mf-tinaja-gr:8081/render?target=aliasByNode(movingMedian(home.*.tinaja.M1.*.1%2C%20%2710min%27)%2C%204%2C%201)&from=-24h&until=now&format=png&maxDataPoints=1137&width=928&height=148&bgcolor=1f1f1f&fgcolor=BBBFC2&lineWidth=1&hideLegend=false&yUnitSystem=si
+  # http://tinaja-gr:8081/render?target=aliasByNode(movingMedian(home.*.tinaja.M1.*.1%2C%20%2710min%27)%2C%204%2C%201)&from=-24h&until=now&format=png&maxDataPoints=1137&width=928&height=148&bgcolor=1f1f1f&fgcolor=BBBFC2&lineWidth=1&hideLegend=false&yUnitSystem=si
   robot.respond /chart temps/i, (msg) ->
     
-    # msg.http("http://mf-tinaja-gr:8081/render?target=aliasByNode(movingMedian(home.*.tinaja.M1.*.1%2C%20%2710min%27)%2C%204%2C%201)&from=-24h&until=now&format=png&maxDataPoints=1137&width=928&height=148&bgcolor=1f1f1f&fgcolor=BBBFC2&lineWidth=1&hideLegend=false&yUnitSystem=si")
+    # msg.http("http://tinaja-gr:8081/render?target=aliasByNode(movingMedian(home.*.tinaja.M1.*.1%2C%20%2710min%27)%2C%204%2C%201)&from=-24h&until=now&format=png&maxDataPoints=1137&width=928&height=148&bgcolor=1f1f1f&fgcolor=BBBFC2&lineWidth=1&hideLegend=false&yUnitSystem=si")
     #   .get() (err, res, body) -> 
 
-    url = "http://mf-tinaja-gr:8081/render?target=aliasByNode(movingMedian(home.*.tinaja.M1.*.1%2C%20%2710min%27)%2C%204%2C%201)&from=-24h&until=now&format=png&maxDataPoints=1137&width=928&height=148&bgcolor=1f1f1f&fgcolor=BBBFC2&lineWidth=1&hideLegend=false&yUnitSystem=si"
+    url = "http://tinaja-gr:8081/render?target=aliasByNode(movingMedian(home.*.tinaja.M1.*.1%2C%20%2710min%27)%2C%204%2C%201)&from=-24h&until=now&format=png&maxDataPoints=1137&width=928&height=148&bgcolor=1f1f1f&fgcolor=BBBFC2&lineWidth=1&hideLegend=false&yUnitSystem=si"
 
     msg.send "Here's the chart of room temperatures for the last 24 hours:"
     # msg.send "#{url}#.png"
@@ -199,7 +200,7 @@ module.exports = (robot) ->
   #   lightState = res.match[1]
   #   res.send "turning mochad #{lightState} "
 
-  #   robot.http("http://mf-tinaja-co:1880/mochad?test=#{lightState}").get() (err, res, body) ->
+  #   robot.http("http://tinaja-co:1880/mochad?test=#{lightState}").get() (err, res, body) ->
   #   # error checking code here
 
   #   res.send "Got back #{body}"
