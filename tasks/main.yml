@@ -1,8 +1,10 @@
 ---
 # tasks file for tinajalabs.chatbot
 
+
 # --------------------------------------------------------------------
 # do this before installing hubot-rocketchat and running yo hubot
+
 - name: Tinaja config task | Create the hubot directory
   file:
     path: "{{ bot_dir }}"
@@ -11,20 +13,32 @@
     group: pi
     mode: 0775
 
-- name: Tinaja config task | Update apt-get cache
-  apt:
-    update_cache: yes
+# - name: update cache, install apt installs apt-transport-https.
+#   apt: 
+#     update_cache: yes
+#     name: "{{ item }}"
+#     state: present
+#   with_items:
+#     - apt-transport-https
 
 # --------------------------------------------------------------------
+# nodejs
+
 - name:  "Tinaja config task | Pre-config for nodejs/npm version {{ nodejs_version }}"
   shell: "curl -sL https://deb.nodesource.com/setup_{{ nodejs_version }} | sudo -E bash -"
   args:
     warn: false
+    creates: "/etc/apt/sources.list.d/nodesource.list"
+
 
 - name:  Tinaja config task | Install nodejs & npm with apt-get
   apt:
     name: nodejs
 
+
+
+# --------------------------------------------------------------------
+# yo, hubot, rocketchat adapter
 - name:  Tinaja config task | Install yo, generator-hubot with npm
   npm:
     name: "{{ item }}"
@@ -33,12 +47,12 @@
     - yo
     - generator-hubot
 
-- name:  Tinaja config task | Install the hubot to rocketchat adapter with npm
+- name:  Tinaja config task | Install the hubot to rocketchat adapter with npm as user, pi
   become: true
   become_user: pi
   npm:
     name: "hubot-rocketchat"
-    version: {{ hubot_rocketchat_version }}
+    version: "{{ hubot_rocketchat_version }}"
     path: "{{ bot_dir }}"
 
 # --------------------------------------------------------------------
@@ -48,19 +62,24 @@
   shell: yo hubot --no-insight --owner="{{ bot_owner }}" --name="{{ bot_name }}" --description="{{ bot_desc }}" --adapter="rocketchat"
   args:
     chdir: "{{ bot_dir }}"
+    creates: "{{ bot_dir }}/package.json"
 
 # --------------------------------------------------------------------
+# snap install snapd, rocket.chat
 - name:  Tinaja config task | Install snapd
   apt:
     name: snapd
 
 - name:  Tinaja config task | Snap install of rocketchat-server
   shell: snap install rocketchat-server
+  args:
+    creates: "/snap/rocketchat-server/current/README.md"
+
+
 
 # --------------------------------------------------------------------
 - name: Tinaja config task | Copy hubot start script, starthubot.sh, into {{ bot_dir }}
   become: true
-  become_user: pi
   template:
     src: templates/starthubot.sh
     dest: "{{ bot_dir }}/starthubot.sh"
@@ -86,15 +105,18 @@
     owner: root
     group: root
     mode: 0664
+  register: result_hubot
 
 - name: Tinaja config task | Make sure hubot service is running
   systemd:
     name: hubot
     enabled: true
+    daemon_reload: true
     state: restarted
+  when: result_hubot.changed
 
 
 # =======================================================================================
 - debug:
-  msg: "Access Rocket.Chat at: http://{{ rocket_chat_address }}:{{ rocket_chat_port }}"
+    msg: "Access Rocket.Chat at: http://{{ rocket_chat_address }}:{{ rocket_chat_port }}"
 

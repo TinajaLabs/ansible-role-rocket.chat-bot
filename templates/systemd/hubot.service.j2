@@ -1,15 +1,18 @@
-; hubot systemd init for raspbian stretch
+; hubot systemd init for hubot chat bot
 ; {{ ansible_managed }}
 
 [Unit]
-Description=Chatbot, {{ bot_name }}, based on Hubot
-;Wants=snap.rocketchat-server.rocketchat-server.service
+Description=Chatbot, {{ bot_name }}
+Requires=network.target
+Wants=snap.rocketchat-server.rocketchat-server.service
 After=network.target snap.rocketchat-server.rocketchat-server.service
 
 [Service]
 Type=simple
+
 StandardOutput=syslog
 SyslogIdentifier=hubot_{{ bot_name }}
+
 WorkingDirectory=/opt/{{ bot_name }}/
 
 Environment=ROCKETCHAT_URL=http://{{ rocket_chat_address }}:{{ rocket_chat_port }}
@@ -24,9 +27,12 @@ ExecStart=/opt/{{ bot_name }}/bin/hubot -a rocketchat
 User=root
 Group=root
 
-Restart=on-failure
+Restart=always
 RestartSec=15
+
+# prevent it from giving up permanently
+StartLimitIntervalSec=0
+
 
 [Install]
 WantedBy=multi-user.target
-
